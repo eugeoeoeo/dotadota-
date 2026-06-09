@@ -52,6 +52,15 @@ export default function Navigation({ activeTab, setActiveTab, progress }: Naviga
         </div>
       </header>
 
+      {/* Sidebar Backdrop Overlay on Mobile */}
+      {isOpen && (
+        <div 
+          className="sidebar-backdrop" 
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar Navigation */}
       <aside className={`sidebar glass-panel ${isOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">
@@ -329,6 +338,18 @@ export default function Navigation({ activeTab, setActiveTab, progress }: Naviga
           border-radius: 6px;
           font-size: 0.75rem;
           font-weight: 700;
+        }
+
+        .sidebar-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(6, 5, 10, 0.75);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+          z-index: 998;
         }
 
         @media (max-width: 992px) {

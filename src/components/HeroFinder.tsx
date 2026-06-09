@@ -23,6 +23,11 @@ export default function HeroFinder() {
   const [playstyle, setPlaystyle] = useState<string>('adc');
   const [position, setPosition] = useState<string>('pos1');
   const [recommendations, setRecommendations] = useState<RecommendedHero[] | null>(null);
+  const [cardTabs, setCardTabs] = useState<Record<number, 'skills' | 'build' | 'guide'>>({
+    0: 'skills',
+    1: 'skills',
+    2: 'skills'
+  });
 
   const getAttributeBadge = (attr: string) => {
     switch (attr) {
@@ -220,6 +225,11 @@ export default function HeroFinder() {
     }
 
     setRecommendations(heroes);
+    setCardTabs({
+      0: 'skills',
+      1: 'skills',
+      2: 'skills'
+    });
   };
 
   return (
@@ -286,44 +296,78 @@ export default function HeroFinder() {
                   </div>
                 </div>
 
+                {/* Tabs Selector for Mobil/Desktop Compactness */}
+                <div className="card-tabs-header">
+                  <button 
+                    className={`card-tab-btn ${(!cardTabs[index] || cardTabs[index] === 'skills') ? 'active-card-tab' : ''}`}
+                    onClick={() => setCardTabs(prev => ({ ...prev, [index]: 'skills' }))}
+                  >
+                    Skills
+                  </button>
+                  <button 
+                    className={`card-tab-btn ${cardTabs[index] === 'build' ? 'active-card-tab' : ''}`}
+                    onClick={() => setCardTabs(prev => ({ ...prev, [index]: 'build' }))}
+                  >
+                    Build
+                  </button>
+                  <button 
+                    className={`card-tab-btn ${cardTabs[index] === 'guide' ? 'active-card-tab' : ''}`}
+                    onClick={() => setCardTabs(prev => ({ ...prev, [index]: 'guide' }))}
+                  >
+                    Guide
+                  </button>
+                </div>
+
                 <div className="rec-details">
-                  <div className="rec-section">
-                    <span className="rec-subtitle">Archetype Role</span>
-                    <p className="rec-val">{hero.roleType}</p>
-                  </div>
+                  {(!cardTabs[index] || cardTabs[index] === 'skills') && (
+                    <div className="tab-pane-content animate-fade-in">
+                      <div className="rec-section">
+                        <span className="rec-subtitle">Archetype Role</span>
+                        <p className="rec-val">{hero.roleType}</p>
+                      </div>
 
-                  <div className="rec-section">
-                    <span className="rec-subtitle">Innate Ability (7.36)</span>
-                    <p className="rec-val">{hero.innate}</p>
-                  </div>
+                      <div className="rec-section">
+                        <span className="rec-subtitle">Innate Ability (7.36)</span>
+                        <p className="rec-val">{hero.innate}</p>
+                      </div>
 
-                  <div className="rec-section">
-                    <span className="rec-subtitle">Recommended Facet (7.36)</span>
-                    <p className="rec-val">{hero.facet}</p>
-                  </div>
-
-                  <div className="rec-section border-top-light">
-                    <span className="rec-subtitle"><ShoppingBag size={12} /> Starting Items</span>
-                    <div className="items-list">
-                      {hero.startingItems.map((item, idx) => (
-                        <span key={idx} className="item-tag badge-secondary">{item}</span>
-                      ))}
+                      <div className="rec-section">
+                        <span className="rec-subtitle">Recommended Facet (7.36)</span>
+                        <p className="rec-val">{hero.facet}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="rec-section">
-                    <span className="rec-subtitle"><ShoppingBag size={12} /> Suggested Core Items</span>
-                    <div className="items-list">
-                      {hero.coreItems.map((item, idx) => (
-                        <span key={idx} className="item-tag badge-primary">{item}</span>
-                      ))}
+                  {cardTabs[index] === 'build' && (
+                    <div className="tab-pane-content animate-fade-in">
+                      <div className="rec-section">
+                        <span className="rec-subtitle"><ShoppingBag size={12} /> Starting Items</span>
+                        <div className="items-list">
+                          {hero.startingItems.map((item, idx) => (
+                            <span key={idx} className="item-tag badge-secondary">{item}</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="rec-section">
+                        <span className="rec-subtitle"><ShoppingBag size={12} /> Suggested Core Items</span>
+                        <div className="items-list">
+                          {hero.coreItems.map((item, idx) => (
+                            <span key={idx} className="item-tag badge-primary">{item}</span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="rec-section pro-guide-section">
-                    <span className="rec-subtitle text-gold"><Zap size={12} /> Laning Guideline</span>
-                    <p className="rec-val guide-text">{hero.laningGuide}</p>
-                  </div>
+                  {cardTabs[index] === 'guide' && (
+                    <div className="tab-pane-content animate-fade-in">
+                      <div className="rec-section pro-guide-section">
+                        <span className="rec-subtitle text-gold"><Zap size={12} /> Laning Guideline</span>
+                        <p className="rec-val guide-text">{hero.laningGuide}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -400,6 +444,47 @@ export default function HeroFinder() {
           font-size: 1.25rem;
           color: #fff;
           line-height: 1.2;
+        }
+
+        .card-tabs-header {
+          display: flex;
+          background: rgba(0, 0, 0, 0.25);
+          border: 1px solid var(--border-light);
+          border-radius: 6px;
+          padding: 3px;
+          margin-bottom: 16px;
+          gap: 4px;
+        }
+
+        .card-tab-btn {
+          flex: 1;
+          background: transparent;
+          color: var(--text-muted);
+          border: none;
+          padding: 6px 8px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          border-radius: 4px;
+          text-align: center;
+          cursor: pointer;
+          transition: var(--transition-fast);
+        }
+
+        .card-tab-btn:hover {
+          color: #fff;
+          background: rgba(255, 255, 255, 0.02);
+        }
+
+        .active-card-tab {
+          background: var(--color-primary) !important;
+          color: #fff !important;
+        }
+
+        .tab-pane-content {
+          min-height: 160px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
         }
 
         .rec-details {

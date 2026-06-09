@@ -25,6 +25,18 @@ export default function InteractiveMap() {
   const [selectedNode, setSelectedNode] = useState<MapNode | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
+  const handleNodeSelect = (node: MapNode) => {
+    setSelectedNode(node);
+    if (window.innerWidth < 992) {
+      setTimeout(() => {
+        const inspectorEl = document.getElementById('objective-inspector');
+        if (inspectorEl) {
+          inspectorEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  };
+
   const nodes: MapNode[] = [
     {
       id: 'rosh-dire',
@@ -324,7 +336,7 @@ export default function InteractiveMap() {
                 key={node.id}
                 className={`map-node-marker ${getMarkerColor(node.category)} ${selectedNode?.id === node.id ? 'marker-selected' : ''}`}
                 style={{ top: node.top, left: node.left }}
-                onClick={() => setSelectedNode(node)}
+                onClick={() => handleNodeSelect(node)}
                 aria-label={node.name}
               >
                 <span className="marker-inner" />
@@ -334,7 +346,7 @@ export default function InteractiveMap() {
         </div>
 
         {/* Inspector Sidebar */}
-        <div className="inspector-card-column">
+        <div className="inspector-card-column" id="objective-inspector">
           {selectedNode ? (
             <div className="inspector-panel glass-card animate-fade-in" key={selectedNode.id}>
               <div className="inspector-header">

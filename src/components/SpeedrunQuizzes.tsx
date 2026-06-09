@@ -319,6 +319,14 @@ export default function SpeedrunQuizzes({ progress, setQuizzesPassed }: Speedrun
     setIsSubmitted(false);
     setScore(0);
     setQuizFinished(false);
+    if (window.innerWidth < 992) {
+      setTimeout(() => {
+        const quizContainer = document.getElementById('active-quiz-container');
+        if (quizContainer) {
+          quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
   };
 
   return (
@@ -354,7 +362,7 @@ export default function SpeedrunQuizzes({ progress, setQuizzesPassed }: Speedrun
         </div>
 
         {/* Active Quiz Box */}
-        <div className="active-quiz-column">
+        <div className="active-quiz-column" id="active-quiz-container">
           {!quizFinished ? (
             <div className="quiz-card glass-card">
               <div className="quiz-progress-header">
